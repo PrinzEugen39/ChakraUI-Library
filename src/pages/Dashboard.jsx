@@ -1,22 +1,42 @@
-import { Box, Container, Heading, Text, SimpleGrid } from "@chakra-ui/react";
+import { EditIcon, ViewIcon } from "@chakra-ui/icons";
+import { Box, Container, Heading, Text, SimpleGrid, Card, CardHeader, CardBody, CardFooter, Flex, HStack, Button, Divider, Avatar } from "@chakra-ui/react";
+import { useLoaderData } from "react-router-dom";
 
 export default function Dashboard() {
+  const tasks = useLoaderData()
   return (
-    <SimpleGrid p="10px" spacing={5} minChildWidth="300px">
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
+    <SimpleGrid spacing={10} minChildWidth="360px">
+      {tasks && tasks.map(task => (
+        <Card key={task.id} borderTop="8px" borderColor="purple.300" bg="white">
+          <CardHeader>
+            <Flex gap={5}>
+              <Avatar src={task.img}/>
+              <Box>
+                <Heading as="h3" size="sm">{task.title}</Heading>
+                <Text>by {task.author}</Text>
+              </Box>
+            </Flex>
+          </CardHeader>
+          <CardBody color="gray.500">
+            <Text>{task.description}</Text>
+          </CardBody>
 
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
+          <Divider borderColor="gray.200"/>
 
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
-      <Box bg="white" h="200px" border="1px solid"></Box>
+          <CardFooter>
+            <HStack>
+              <Button variant="ghost" leftIcon={<ViewIcon />}>Watch</Button>
+              <Button variant="ghost" leftIcon={<EditIcon />}>Comment</Button>
+            </HStack>
+          </CardFooter>
+        </Card>
+      ))}
     </SimpleGrid>
   );
+}
+
+export const tasksLoader = async () => {
+  const res = await fetch("http://localhost:3000/tasks")
+
+  return res.json()
 }
